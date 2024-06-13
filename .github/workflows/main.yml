@@ -24,7 +24,10 @@ jobs:
           api-url: 'https://192.168.7.60/akeyless-api/v2/'
       - name: Export Secrets to Environment
         run: >
-          echo '${{ steps.fetch-dynamic-secrets.outputs.postgres_dynamic_secret }}' | jq –r 'to_entries|map("POSTGRES_\(.key|ascii_upcase)=\(.value|tostring)")|.[]' >> $GITHUB_ENV
+          echo '${{ steps.fetch-dynamic-secrets.outputs.postgres_dynamic_secret
+          }}' | jq -r
+          'to_entries|map("POSTGRES_\(.key|ascii_upcase)=\(.value|tostring)")|.[]'
+          >> $GITHUB_ENV
       - name: Update PostgreSQL Table
         env:
           DB_NAME: postgres
@@ -33,8 +36,9 @@ jobs:
           DB_USER: '${{ env.POSTGRES_USER }}'
           DB_PASS: '${{ env.POSTGRES_PASSWORD }}'
         run: >
-          # The SQL command to update the table. You should replace this with your actual SQL command.
-          SQL_COMMAND="INSERT INTO public.people (First_Name, Last_Name) VALUES ('BF', 'Louis');"
+         # The SQL command to update the table. You should replace this with your actual SQL command.
+          SQL_COMMAND="INSERT INTO public.people (First_Name, Last_Name) VALUES
+          ('Ivan', 'Tan');"
           # Use PGPASSWORD to pass the password, then run psql to execute your SQL command
           export PGPASSWORD=$DB_PASS
           psql -h "$DB_HOST" -p "$DB_PORT" -d "$DB_NAME" -U "$DB_USER" -c "$SQL_COMMAND"
